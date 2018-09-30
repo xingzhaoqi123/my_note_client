@@ -43,10 +43,11 @@ export default {
                 .post("/login", this.formData)
                 .then(res => {
                     if (res.code == 200) {
-                        this.$message.success("登录成功");
+                        this.$message.success(res.msg);
                         this.$store.commit("CHANGE_USERINFO", res.userData);
                     } else {
-                        this.$message.error(res.msg);
+                        this.$store.commit("CHANGE_USERINFO", res.userData);
+                        this.$message.info('登录状态已过期')
                     }
                 })
                 .catch(err => {

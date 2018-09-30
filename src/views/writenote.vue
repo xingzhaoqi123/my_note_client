@@ -11,7 +11,12 @@
                 </quill-editor>
             </div>
             <div class="label item">
-                <p><span class="label_title">标签：</span></p>
+                <p><span class="label_title">标签： <div style="margin-top: 20px;">
+                            <el-radio-group v-model="formData.category">
+                                <el-radio-button v-for="item in categorise" :label="item._id" :key="item._id">{{item.name}}</el-radio-button>
+                            </el-radio-group>
+                        </div>
+                    </span></p>
                 <el-button type="primary" @click="publishnote">发布笔记</el-button>
             </div>
         </div>
@@ -54,18 +59,37 @@ export default {
                         }
                     }
                 }
-            }
+            },
+            categorise: []
         };
     },
     methods: {
+        getcategories() {
+            this.$axios.get("/category").then(res => {
+                this.categorise = res.data;
+            });
+        },
         onEditorChange({ quill, html, text }) {
             // console.log('editor change!', quill, html, text)
-            this.formData.contentText= text;
-            this.formData.contentText=this.formData.contentText.substring(0,200)+'...';
+            this.formData.contentText = text;
+            this.formData.contentText =
+                this.formData.contentText.substring(0, 60) + "...";
         },
         publishnote() {
-            this.$axios.post("/article").then(res => {});
+            this.$axios.post("/article", this.formData).then(res => {
+                if (res.code == 200) {
+                    this.$message.success(res.msg);
+                    this.$router.push("/");
+                } else {
+                    this.$message.error(res.msg);
+                }
+            }).catch(err=>{
+                console.log(err)
+            });
         }
+    },
+    created() {
+        this.getcategories();
     }
 };
 </script>

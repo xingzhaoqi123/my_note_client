@@ -4,26 +4,27 @@
             <div class="left_img">
                 <p class="desc">蒙多，想去哪就去哪</p>
             </div>
-            <div class="list">
-                <a href="javascript:;" class="item">
+            <div class="list" :data="userData" v-for="item in userData">
+                <router-link :to="{path:'/article',query:{id:item._id}}" class="item">
                     <div class="item_top">
                         <div class="item_top_left">
-                            <img src="/static/imgs/timg.jpg">
+                            <img :src="item.author.avatar">
                         </div>
                             <div class="item_top_right">
                                 <div class="row_one">
-                                    <span class="author_name">111111</span>
-                                    <h2 class="title">1111111111</h2>
+                                    <span class="author_name" v-text="item.author.username"></span>
+                                    <h2 class="title" v-text="item.title"></h2>
                                 </div>
                                 <div class="row_two">
-                                    <span>浏览：</span>
-                                    <span>回复：</span>
-                                    <span>分类：</span>
+                                    <span>浏览：<span v-text="item.readnumber"></span></span>
+                                    <span>回复：<span v-text="item.commonnum"></span></span>
+                                    <span>分类：<span v-text="item.category.name"></span></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="item_bottom">afdsfadsf</div>
-                </a>
+                        <div class="item_bottom" v-text="item.contentText"></div>
+                </router-link>
+
             </div>
         </div>
         <userBox class="flr clearfix"></userBox>
@@ -35,6 +36,28 @@ import userBox from "@/components/userBox";
 export default {
     components: {
         userBox
+    },
+    data() {
+        return {
+            userData: {}
+        };
+    },
+    methods: {
+        getarticles() {
+            this.$axios
+                .get("/article")
+                .then(res => {
+                    if (res.code == 200) {
+                        this.userData = res.data;
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    },
+    created() {
+        this.getarticles();
     }
 };
 </script>
@@ -70,7 +93,7 @@ export default {
 }
 .list {
     box-sizing: border-box;
-    margin-top: 30px;
+    margin-top: 10px;
     border-radius: 4px;
     padding: 2px 20px;
     background: #fff;

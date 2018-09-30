@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const env = process.env.NODE_ENV;
-let baseURL = (env == "development" ? "/api" : "/");
+let baseURL = (env == "development" ? "/xzq" : "/");
 
 const instance = axios.create({
   baseURL,
